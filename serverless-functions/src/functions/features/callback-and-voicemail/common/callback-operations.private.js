@@ -26,7 +26,7 @@ exports.createCallbackTask = async (parameters) => {
   const timeout = overriddenTimeout || 86400;
   const priority = overriddenPriority || 0;
   const attempts = retryAttempt || 0;
-  const taskChannel = overriddenTaskChannel || 'voice';
+  const taskChannel = overriddenTaskChannel || process.env.TWILIO_FLEX_CALLBACK_TASK_CHANNEL || 'voice';
 
   // setup required task attributes for task
   const attributes = {
