@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { useFlexSelector } from '@twilio/flex-ui';
+import { useFlexSelector, Template, templates } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { Flex, Stack, Box, Text } from '@twilio-paste/core';
 
 import { AppState } from '../../../../types/manager';
 import { reduxNamespace } from '../../../../utils/state';
 import { Actions, SupervisorBargeCoachState } from '../../flex-hooks/states/SupervisorBargeCoach';
+import { StringTemplates } from '../../flex-hooks/strings/BargeCoachAssist';
 // Used for Sync Docs
 import { SyncDoc } from '../../utils/sync/Sync';
 
@@ -26,14 +27,24 @@ export const SupervisorMonitorPanel = (_props: SupervisorMonitorPanelProps) => {
 
   const agentWorkerSID = useFlexSelector((state) => state?.flex?.supervisor?.stickyWorker?.worker?.sid);
 
+  const supervisorSwitch = (status: string, supervisor: string) => {
+    switch (status) {
+      case 'barge':
+        return templates[StringTemplates.PanelBarge]({ supervisor });
+      case 'coaching':
+        return templates[StringTemplates.PanelCoaching]({ supervisor });
+      case 'monitoring':
+        return templates[StringTemplates.PanelMonitoring]({ supervisor });
+      default:
+        return null;
+    }
+  };
   const supervisorsArray = () => {
     return supervisorArray.map((supervisorArray) => (
-      <tr key={supervisorArray.supervisorSID}>
-        <td>{supervisorArray.supervisor}</td>
-        <td style={{ color: 'green' }}>&nbsp;{supervisorArray.status}</td>
-      </tr>
+      <li key={`${Math.random()}`}>{supervisorSwitch(supervisorArray.status, supervisorArray.supervisor)}</li>
     ));
   };
+
   const syncUpdates = () => {
     if (agentWorkerSID) {
       // Let's subscribe to the sync doc as an agent/worker and check
@@ -71,36 +82,26 @@ export const SupervisorMonitorPanel = (_props: SupervisorMonitorPanelProps) => {
     }
   });
 
-  if (supervisorArray.length > 0) {
-    return (
-      <Flex hAlignContent="center" vertical padding="space40">
-        <Stack orientation="horizontal" spacing="space30" element="COACH_STATUS_PANEL_BOX">
-          <Box backgroundColor="colorBackgroundPrimaryWeakest">
-            Active Supervisors:
-            <Box>
-              <ol>
-                <Text
-                  as="p"
-                  fontWeight="fontWeightMedium"
-                  fontSize="fontSize30"
-                  marginBottom="space40"
-                  color="colorTextSuccess"
-                >
-                  {supervisorsArray()}
-                </Text>
-              </ol>
-            </Box>
-          </Box>
-        </Stack>
-      </Flex>
-    );
-  }
   return (
     <Flex hAlignContent="center" vertical padding="space40">
-      <Stack orientation="horizontal" spacing="space30" element="COACH_STATUS_PANEL_BOX">
-        <Box backgroundColor="colorBackgroundPrimaryWeakest" padding="space40">
-          Active Supervisors:
-          <Box>None</Box>
+      <Stack orientation="vertical" spacing="space30" element="COACH_STATUS_PANEL_BOX">
+        <Template source={templates[StringTemplates.ActiveSupervisors]} />
+        <Box>
+          {supervisorArray.length > 0 ? (
+            <ol>
+              <Text
+                as="p"
+                fontWeight="fontWeightMedium"
+                fontSize="fontSize30"
+                marginBottom="space40"
+                color="colorTextSuccess"
+              >
+                {supervisorsArray()}
+              </Text>
+            </ol>
+          ) : (
+            <Template source={templates[StringTemplates.None]} />
+          )}
         </Box>
       </Stack>
     </Flex>

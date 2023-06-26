@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { TaskHelper, useFlexSelector, ITask, IconButton } from '@twilio/flex-ui';
+import { TaskHelper, useFlexSelector, ITask, IconButton, templates } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { Flex, Stack } from '@twilio-paste/core';
 
 import { AppState } from '../../../../types/manager';
 import { reduxNamespace } from '../../../../utils/state';
 import { Actions, SupervisorBargeCoachState } from '../../flex-hooks/states/SupervisorBargeCoach';
+import { StringTemplates } from '../../flex-hooks/strings/BargeCoachAssist';
 // Used for Sync Docs
 import { SyncDoc } from '../../utils/sync/Sync';
 
@@ -40,17 +41,37 @@ export const SupervisorPrivateToggle = ({ task }: SupervisorPrivateToggleProps) 
         }),
       );
       if (coaching) {
-        SyncDoc.initSyncDocSupervisors(agentWorkerSID, conferenceSID, myWorkerSID, supervisorFN, 'is Coaching', 'add');
-      } else if (barge) {
-        SyncDoc.initSyncDocSupervisors(agentWorkerSID, conferenceSID, myWorkerSID, supervisorFN, 'has Joined', 'add');
-      } else {
+        const supervisorStatus = 'coaching';
+        const updateStatus = 'add';
         SyncDoc.initSyncDocSupervisors(
           agentWorkerSID,
           conferenceSID,
           myWorkerSID,
           supervisorFN,
-          'is Monitoring',
-          'add',
+          supervisorStatus,
+          updateStatus,
+        );
+      } else if (barge) {
+        const supervisorStatus = 'barge';
+        const updateStatus = 'add';
+        SyncDoc.initSyncDocSupervisors(
+          agentWorkerSID,
+          conferenceSID,
+          myWorkerSID,
+          supervisorFN,
+          supervisorStatus,
+          updateStatus,
+        );
+      } else {
+        const supervisorStatus = 'monitoring';
+        const updateStatus = 'add';
+        SyncDoc.initSyncDocSupervisors(
+          agentWorkerSID,
+          conferenceSID,
+          myWorkerSID,
+          supervisorFN,
+          supervisorStatus,
+          updateStatus,
         );
       }
       // If privateMode is false, toggle to true and remove the Supervisor from the Sync Doc
@@ -78,10 +99,10 @@ export const SupervisorPrivateToggle = ({ task }: SupervisorPrivateToggleProps) 
           icon={privateMode ? 'EyeBold' : 'Eye'}
           disabled={!isLiveCall}
           onClick={togglePrivateMode}
-          title={privateMode ? 'Disable Private Mode' : 'Enable Private Mode'}
+          title={privateMode ? templates[StringTemplates.DisablePrivacy]() : templates[StringTemplates.EnablePrivacy]()}
           variant="secondary"
         />
-        {privateMode ? 'Privacy On' : 'Privacy Off'}
+        {privateMode ? templates[StringTemplates.PrivacyOn]() : templates[StringTemplates.PrivacyOff]()}
       </Stack>
     </Flex>
   );

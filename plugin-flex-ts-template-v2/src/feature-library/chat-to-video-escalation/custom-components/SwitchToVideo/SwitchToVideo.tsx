@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { Actions, ITask, Manager, ConversationState, Notifications, styled, IconButton } from '@twilio/flex-ui';
+import {
+  Actions,
+  ITask,
+  Manager,
+  ConversationState,
+  Notifications,
+  styled,
+  IconButton,
+  templates,
+} from '@twilio/flex-ui';
 
 import { updateTaskAttributesForVideo } from '../../helpers/taskAttributes';
 import { getFeatureFlags } from '../../../../utils/configuration';
 import { ChatToVideoNotification } from '../../flex-hooks/notifications/ChatToVideo';
+import { StringTemplates } from '../../flex-hooks/strings/ChatToVideo';
 
 interface SwitchToVideoProps {
   task: ITask;
@@ -54,7 +64,7 @@ const SwitchToVideo: React.FunctionComponent<SwitchToVideoProps> = ({ task, conv
     }
 
     await fetch(
-      `${serverlessProtocol}://${serverlessDomain}/features/chat-to-video-escalation/generate-unique-code?taskSid=${taskSid}`,
+      `${serverlessProtocol}://${serverlessDomain}/features/chat-to-video-escalation/generate-unique-code?taskSid=${taskSid}&protocol=${serverlessProtocol}`,
       options,
     )
       .then(async (response) => response.json())
@@ -67,7 +77,7 @@ const SwitchToVideo: React.FunctionComponent<SwitchToVideoProps> = ({ task, conv
         }
 
         Actions.invokeAction('SendMessage', {
-          body: `Please join me using this unique video link: ${response.full_url}`,
+          body: `${templates[StringTemplates.InviteMessage]()} ${response.full_url}`,
           conversation,
           messageAttributes: {
             hasVideo: true,
@@ -91,7 +101,7 @@ const SwitchToVideo: React.FunctionComponent<SwitchToVideoProps> = ({ task, conv
         disabled={isLoading}
         onClick={onClick}
         variant="secondary"
-        title="Switch to Video"
+        title={templates[StringTemplates.SwitchToVideo]()}
       />
     </IconContainer>
   );
