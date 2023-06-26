@@ -10,7 +10,7 @@
         "enabled": false,
         "filter_teams_view": false
       },
-      "callbacks": {
+      "callback_and_voicemail": {
         "enabled": false,
         "allow_requeue": true,
         "max_attempts": 3,
@@ -33,6 +33,7 @@
       },
       "enhanced_crm_container": {
         "enabled": false,
+        "url": "https://www.bing.com/search?q={{task.from}}",
         "should_display_url_when_no_tasks": false,
         "display_url_when_no_tasks": "https://www.bing.com"
       },
@@ -79,7 +80,7 @@
       },
       "teams_view_filters": {
         "enabled": false,
-        "logFilters": true,
+        "log_filters": false,
         "applied_filters": {
           "email": true,
           "department": true,
@@ -133,7 +134,7 @@
             "channel": "voice",
             "auto_accept": false,
             "auto_select": false,
-            "auto_wrapup": false,
+            "auto_wrapup": true,
             "required_attributes": [],
             "wrapup_time": 30000
           },
@@ -155,6 +156,9 @@
         "enabled": false,
         "location": "CRM"
       },
+      "keyboard_shortcuts": {
+        "enabled": false
+      },
       "custom_hold_music": {
         "enabled": false,
         "url": ""
@@ -173,12 +177,14 @@
         "external_directory": {
           "enabled": false,
           "skipPhoneNumberValidation": false,
-          "directory": [{
-            "cold_transfer_enabled": true,
-            "warm_transfer_enabled": true,
-            "label": "Sample Entry",
-            "number": "+10000000000"
-          }]
+          "directory": [
+            {
+              "cold_transfer_enabled": true,
+              "warm_transfer_enabled": true,
+              "label": "Sample Entry",
+              "number": "+10000000000"
+            }
+          ]
         }
       },
       "dispositions": {
@@ -208,6 +214,16 @@
       "attribute_viewer": {
         "enabled": false,
         "enabled_for_agents": false
+      },
+      "admin_ui": {
+        "enabled": false
+      },
+      "localization": {
+        "enabled": false,
+        "show_menu": true
+      },
+      "park_interaction": {
+        "enabled": false
       }
     }
   }
